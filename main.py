@@ -16,6 +16,11 @@ def get_db():
         db.close()
 
 
+# GET - All todos
+@app.get("/todos", response_model=list[TodoSchema])
+def read_todos(db: Session = Depends(get_db)):
+    return db.query(Todo).all()
+
 # POST - create TODO
 @app.post("/todos", response_model=TodoSchema)
 def create_todo(todo: TodoCreate, db: Session = Depends(get_db)):
@@ -25,10 +30,6 @@ def create_todo(todo: TodoCreate, db: Session = Depends(get_db)):
     db.refresh(db_todo)
     return db_todo
 
-# GET - All todos
-@app.get("/", response_model=list[TodoSchema])
-def read_todos(db: Session = Depends(get_db)):
-    return db.query(Todo).all()
 
 # GET - Single todo
 @app.get("/todos/{todo_id}", response_model=TodoSchema)
